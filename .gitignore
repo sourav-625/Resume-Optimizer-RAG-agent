@@ -1,0 +1,38 @@
+# Python bytecode and test/tool caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local credentials and environment configuration
+.env
+.env.*
+!.env.example
+google_api_key.txt
+
+# Local application data
+qdrant_local_data/
+resume.txt
+job_application.txt
+
+# Build and distribution artifacts
+build/
+dist/
+*.egg-info/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
