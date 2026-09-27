@@ -1,8 +1,7 @@
 from agent_framework_gemini import GeminiChatClient
 from agent_framework import Agent, tool
 
-from text_chunker import chunk_text
-from vector_database import create_vector_database, query_vector_database, embed_query
+from vector_database import query_vector_database
 
 with open("google_api_key.txt", "r") as f:
     google_api_key = f.read().strip()
@@ -13,23 +12,50 @@ client = GeminiChatClient(
 )
 
 @tool
-def fetch_resume(resume_id):
+def fetch_resume():
     """
-    Fetch a resume from a database or API based on the provided resume_id.
-    For demonstration purposes, this function returns a static resume text.
+    Fetch the resume text from the provided resume.txt file.
     """
-    return ""
+    with open("resume.txt", "r") as f:
+        return f.read().strip()
+
+@tool
+def fetch_job_description():
+    """
+    Fetch the job description text from the provided job_application.txt file.
+    """
+    with open("job_application.txt", "r") as f:
+        return f.read().strip()
+
+@tool
+def query_resume_database(query):
+    """
+    Query the resume vector database for similar chunks.
+
+    Args:
+        query (str): The query to search for.
+    """
+    return query_vector_database(client, "resume_collection", query)
+
+@tool
+def query_job_description_database(query):
+    """
+    Query the job description vector database for similar chunks.
+
+    Args:
+        query (str): The query to search for.
+    """
+    return query_vector_database(client, "job_description_collection", query)
 
 agent = Agent(
     client=client,
     name="Resume_Optimizer",
     description="An agent that optimizes resumes for job applications.",
     tools=[
-        tool(
-            name="optimize_resume",
-            description="Optimizes a resume based on job description and best practices.",
-            func=lambda resume, job_description: f"Optimized Resume for {job_description}: {resume}"
-        )
+        fetch_resume,
+        fetch_job_description,
+        query_resume_database,
+        query_job_description_database
     ],
     instructions="You are a resume optimization agent. Use the provided tool to optimize resumes based on job descriptions."
 )

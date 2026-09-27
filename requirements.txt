@@ -1,0 +1,10 @@
+agent-framework
+agent-framework-gemini
+fastapi
+pypdf
+python-multipart
+qdrant-client
+semchunk
+sentence-transformers
+transformers
+uvicorn

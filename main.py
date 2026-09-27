@@ -2,6 +2,10 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pypdf import PdfReader
 from agent import chat
+from utils import (
+    create_vector_db_from_resume,
+    create_vector_db_from_job_description,
+)
 
 app = FastAPI()
 
@@ -44,8 +48,11 @@ async def process_files(
     with open("job_application.txt", "w", encoding="utf-8") as f:
         f.write(file_b_text)
 
+    create_vector_db_from_resume()
+    create_vector_db_from_job_description()
+
     return {
-        "response": "Both files received successfully.",
+        "response": await chat("Please optimize the resume based on the job description provided."),
     }
 
 if __name__ == "__main__":

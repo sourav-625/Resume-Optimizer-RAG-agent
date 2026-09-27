@@ -38,9 +38,9 @@ def create_vector_database(chunks, database_name="my_collection"):
         vectors_config=VectorParams(size=1536, distance=Distance.COSINE)
     )
     points = []
+    embeddings = embed_query(chunks)
     for i, chunk in enumerate(chunks):
-        embedding = embed_query(chunk)
-        points.append(PointStruct(id=i, vector=embedding, payload={"text": chunk}))
+        points.append(PointStruct(id=i, vector=embeddings[i], payload={"text": chunk}))
     client.upsert(
         collection_name=database_name,
         points=points
@@ -57,10 +57,10 @@ async def query_vector_database(client, collection, query, top_k=5):
         query (str): The query to search for.
         top_k (int): The number of top results to return.
     """
-    embedding = embed_query([query])
+    embeddings = embed_query([query])
     results = client.search(
         collection_name=collection,
-        query_vector=embedding[0],
+        query_vector=embeddings[0],
         limit=top_k
     )
     return [result.payload["text"] for result in results]
