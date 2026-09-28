@@ -5,14 +5,14 @@ def fetch_resume():
     """
     Fetch the resume text from the provided resume.txt file.
     """
-    with open("resume.txt", "r") as f:
+    with open("resume.txt", "r", encoding="utf-8") as f:
         return f.read().strip()
 
 def fetch_job_description():
     """
     Fetch the job description text from the provided job_application.txt file.
     """
-    with open("job_application.txt", "r") as f:
+    with open("job_application.txt", "r", encoding="utf-8") as f:
         return f.read().strip()
 
 def create_vector_db_from_resume():

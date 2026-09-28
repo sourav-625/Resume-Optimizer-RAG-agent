@@ -1,7 +1,7 @@
 from agent_framework_gemini import GeminiChatClient
 from agent_framework import Agent, tool
 
-from vector_database import query_vector_database
+from vector_database import qdrant_client, query_vector_database
 
 with open("google_api_key.txt", "r") as f:
     google_api_key = f.read().strip()
@@ -16,7 +16,7 @@ def fetch_resume():
     """
     Fetch the resume text from the provided resume.txt file.
     """
-    with open("resume.txt", "r") as f:
+    with open("resume.txt", "r", encoding="utf-8") as f:
         return f.read().strip()
 
 @tool
@@ -24,7 +24,7 @@ def fetch_job_description():
     """
     Fetch the job description text from the provided job_application.txt file.
     """
-    with open("job_application.txt", "r") as f:
+    with open("job_application.txt", "r", encoding="utf-8") as f:
         return f.read().strip()
 
 @tool
@@ -35,7 +35,7 @@ def query_resume_database(query):
     Args:
         query (str): The query to search for.
     """
-    return query_vector_database(client, "resume_collection", query)
+    return query_vector_database(qdrant_client, "resume_collection", query)
 
 @tool
 def query_job_description_database(query):
@@ -45,7 +45,7 @@ def query_job_description_database(query):
     Args:
         query (str): The query to search for.
     """
-    return query_vector_database(client, "job_description_collection", query)
+    return query_vector_database(qdrant_client, "job_description_collection", query)
 
 agent = Agent(
     client=client,
@@ -61,5 +61,5 @@ agent = Agent(
 )
 
 async def chat(usr_input=""):
-    response = await agent.chat(usr_input)
-    return response
+    response = await agent.run(usr_input)
+    return response.text

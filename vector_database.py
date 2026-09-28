@@ -7,6 +7,7 @@ from qdrant_client.models import (
 from sentence_transformers import SentenceTransformer
 
 embeddings_model = SentenceTransformer('all-MiniLM-L6-v2')
+qdrant_client = QdrantClient(":memory:")
 
 def embed_query(queries):
     """
@@ -32,22 +33,24 @@ def create_vector_database(chunks, database_name="my_collection"):
         QdrantClient: The Qdrant client instance.
         database_name (str): The name of the database collection.
     """
-    client = QdrantClient(":memory:")
-    client.recreate_collection(
+    qdrant_client.recreate_collection(
         collection_name=database_name,
-        vectors_config=VectorParams(size=1536, distance=Distance.COSINE)
+        vectors_config=VectorParams(
+            size=embeddings_model.get_sentence_embedding_dimension(),
+            distance=Distance.COSINE,
+        ),
     )
     points = []
     embeddings = embed_query(chunks)
     for i, chunk in enumerate(chunks):
         points.append(PointStruct(id=i, vector=embeddings[i], payload={"text": chunk}))
-    client.upsert(
+    qdrant_client.upsert(
         collection_name=database_name,
         points=points
     )
-    return client, database_name
+    return qdrant_client, database_name
 
-async def query_vector_database(client, collection, query, top_k=5):
+def query_vector_database(client, collection, query, top_k=5):
     """
     Query the vector database for similar chunks.
 
