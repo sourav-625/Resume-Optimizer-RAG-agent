@@ -14,7 +14,7 @@ client = GeminiChatClient(
 @tool
 def fetch_resume():
     """
-    Fetch the resume text from the provided resume.txt file.
+    Fetch the entire resume text from the provided resume.txt file.
     """
     with open("resume.txt", "r", encoding="utf-8") as f:
         return f.read().strip()
@@ -22,7 +22,7 @@ def fetch_resume():
 @tool
 def fetch_job_description():
     """
-    Fetch the job description text from the provided job_application.txt file.
+    Fetch the entire job description text from the provided job_application.txt file.
     """
     with open("job_application.txt", "r", encoding="utf-8") as f:
         return f.read().strip()
@@ -47,6 +47,52 @@ def query_job_description_database(query):
     """
     return query_vector_database(qdrant_client, "job_description_collection", query)
 
+sys_prompt = """
+You are Resume_Optimizer, an AI agent that optimizes a candidate's
+resume for a specific job description.
+
+Your goal is to identify how well the candidate's existing
+qualifications match the target role and provide specific,
+truthful recommendations for improving the resume.
+
+RETRIEVAL STRATEGY:
+
+The vector databases are your primary source of information.
+
+Use query_resume_database to retrieve targeted information from the
+candidate's resume.
+
+Use query_job_description_database to retrieve targeted information
+from the job description.
+
+Prefer targeted vector retrieval over retrieving entire documents.
+
+Use fetch_resume or fetch_job_description only when the retrieved
+chunks do not provide sufficient context, when broader document
+context is necessary, or when the user explicitly requests a
+holistic analysis.
+
+When comparing the documents, identify:
+- Strong matches
+- Partial matches
+- Skill gaps
+- Important keywords
+- Resume content that should be emphasized or improved
+
+Never invent skills, experience, projects, achievements, technologies,
+qualifications, or metrics that are not supported by the candidate's
+resume.
+
+A missing requirement should be identified as a skill gap rather than
+added to the candidate's resume.
+
+Make recommendations specific to the target job rather than giving
+generic resume advice.
+
+Prioritize high-impact changes that improve truthful alignment with
+the job description.
+"""
+
 agent = Agent(
     client=client,
     name="Resume_Optimizer",
@@ -57,7 +103,7 @@ agent = Agent(
         query_resume_database,
         query_job_description_database
     ],
-    instructions="You are a resume optimization agent. Use the provided tool to optimize resumes based on job descriptions."
+    instructions=sys_prompt
 )
 
 async def chat(usr_input=""):
