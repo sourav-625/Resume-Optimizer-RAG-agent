@@ -61,7 +61,7 @@ def query_vector_database(client, collection, query, top_k=5):
         top_k (int): The number of top results to return.
     """
     embeddings = embed_query([query])
-    results = client.search(
+    results = client.query_points(
         collection_name=collection,
         query_vector=embeddings[0],
         limit=top_k

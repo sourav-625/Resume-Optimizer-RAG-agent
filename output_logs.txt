@@ -1,0 +1,29 @@
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 10637.58it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 11605.46it/s]
+INFO:     Started server process [35165]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+/home/sourav/Desktop/optimizer-ai-agent/vector_database.py:39: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  size=embeddings_model.get_sentence_embedding_dimension(),
+=== Chunk 1 (27 characters) ===
+Your long text goes here...
+==============================
+
+Generated 1 chunks.
+Embedding matrix shape: (1, 384)
+File A: sourav_resume_sde.pdf
+File B: SDE JD- NEW.pdf
+File A page count: 2
+File B page count: 5
+INFO:     127.0.0.1:36412 - "POST /process HTTP/1.1" 200 OK
+File A: sourav_resume_sde.pdf
+File B: SDE JD- NEW.pdf
+File A page count: 2
+File B page count: 5
+INFO:     127.0.0.1:50500 - "POST /process HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [35165]
